@@ -1,2 +1,6 @@
+from network import Network
+
+
 class Trainer:
-    pass
+    def __init__(self, network: Network) -> None:
+        self.network = network
