@@ -29,6 +29,7 @@ if __name__ == "__main__":
     result = network.predict(input)
     now = datetime.now()
 
-    print(f"Network predicted: {result} but actual value is: {number}, it took: {(now - pre).total_seconds()} seconds")
+    print(f"Network predicted: {result} but actual value is: {number}")
+    print(f"it took: {(now - pre).total_seconds()} seconds")
 
     export_network(network)
