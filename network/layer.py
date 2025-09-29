@@ -49,7 +49,9 @@ class Layer:
             node_output += connection_weight * previous_node.activation_input
 
         node.raw_output = node_output
-        node.activation_input = self.activate_output(node_output)
+        node_output = self.activate_output(node_output)
+        node.activation_input = node_output
+        node.activation_output = node_output
 
     def activate_output(self, output: float):
         activation_function_map: dict[Enum, callable] = {

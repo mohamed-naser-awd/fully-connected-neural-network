@@ -6,9 +6,8 @@ from network.network import Network
 
 def export_network(network: Network, export_file_name: str = None):
     export_file_name = export_file_name or f"{network.name}.json".lower()
-    export_folder = os.path.join(settings.BASE_FOLDER, "exports")
-    os.makedirs(export_folder, exist_ok=True)
-    export_file_path = os.path.join(export_folder, export_file_name)
+    os.makedirs(settings.EXPORT_FOLDER, exist_ok=True)
+    export_file_path = os.path.join(settings.EXPORT_FOLDER, export_file_name)
 
     export_object = {}
     export_object["name"] = network.name
