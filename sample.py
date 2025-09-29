@@ -8,8 +8,7 @@ def get_mnist_training_data() -> List[Tuple[list[int], int]]:
     )
 
     data = []
-    for i in range(1000):
-        img, label = mnist[i]
+    for img, label in mnist:
         img_list = img.view(-1).mul(255).byte().tolist()
         data.append((img_list, label))
 

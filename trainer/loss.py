@@ -4,6 +4,7 @@ import math
 def mean_squared_error(y_true: float, y_pred: float) -> float:
     return 0.5 * (y_true - y_pred) ** 2
 
+
 def binary_cross_entropy(y_true: float, y_pred: float) -> float:
     """
     y_true: القيمة الحقيقية (0 أو 1)
@@ -15,3 +16,6 @@ def binary_cross_entropy(y_true: float, y_pred: float) -> float:
 
     loss = -(y_true * math.log(y_pred) + (1 - y_true) * math.log(1 - y_pred))
     return loss
+
+
+loss_function = binary_cross_entropy

@@ -12,10 +12,6 @@ if __name__ == "__main__":
     network.add_layer(input_layer)
 
     input_layer = Layer(Layer.LayerType.HIDDEN)
-    input_layer.init_nodes(256)
-    network.add_layer(input_layer)
-
-    input_layer = Layer(Layer.LayerType.HIDDEN)
     input_layer.init_nodes(64)
     network.add_layer(input_layer)
 

@@ -65,3 +65,4 @@ class Layer:
     def set_input(self, list: list[int]):
         for input, node in zip(list, self.nodes):
             node.activation_input = input
+            node.raw_output = input
