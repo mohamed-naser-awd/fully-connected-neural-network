@@ -8,7 +8,7 @@ class Node:
     bias: float
     weights: dict[str, float]
     activation_input: float
-    activation_output: float
+    activated_output: float
     raw_output: float
     layer = None
 

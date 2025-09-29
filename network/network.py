@@ -1,5 +1,5 @@
 from network.node import Node
-from .layer import Layer
+from .layer import Layer, InputLayer
 from functools import cached_property
 
 
@@ -29,7 +29,7 @@ class Network:
                 return output_layer.get_output()
 
     @property
-    def input_layer(self):
+    def input_layer(self) -> InputLayer:
         return self.layers[0]
 
     @property

@@ -18,4 +18,14 @@ def binary_cross_entropy(y_true: float, y_pred: float) -> float:
     return loss
 
 
-loss_function = binary_cross_entropy
+def cross_entropy(y_true: int, y_pred_probs: list[float]) -> float:
+    """
+    y_true: true class index (0–9)
+    y_pred_probs: list of probabilities from softmax, length = num_classes
+    """
+    eps = 1e-12
+    p_true = max(eps, y_pred_probs[y_true])  # probability of correct class
+    return -math.log(p_true)
+
+
+loss_function = cross_entropy

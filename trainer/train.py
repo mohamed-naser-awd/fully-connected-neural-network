@@ -1,7 +1,8 @@
 from network.network import Network
 from network.node import Node
 from .loss import loss_function
-from .derivatives import d_binary_cross_entropy, d_sigmoid, d_relu
+from .derivatives import d_relu
+from network.activation import softmax
 from sample import get_mnist_training_data
 
 
@@ -12,29 +13,31 @@ class NetworkTrainer:
     def __init__(self, network: Network):
         self.network = network
 
-    def train(self):
+    def train(self, epoch=1):
         training_data = get_mnist_training_data()
 
-        for _ in range(1000):
-            for img, y_true in training_data:
+        for _ in range(epoch):
+            for idx, obj in enumerate(training_data):                
+                img, y_true = obj
                 number, confidence = self.network.predict(img)
-                loss = loss_function(1 if number == y_true else 0, confidence)
-                print(
-                    f"loss for train is: {loss}, predicted: {number}, actual: {y_true}, confidence: {confidence}"
+                loss = loss_function(
+                    y_true,
+                    [node.activated_output for node in self.network.output_layer.nodes],
                 )
-
                 self._train(y_true)
 
-    def _train(self, y_true: float):
+                if idx % 10 == 0:
+                    print(
+                        f"loss for train is: {loss}, predicted: {number}, actual: {y_true}, confidence: {confidence}"
+                    )
+
+    def _train(self, y_true: int):
         previous_node_gradients = {}
 
         for idx, node in enumerate(self.network.output_layer.nodes):
-            y_pred = node.activation_output
+            y_pred = node.activated_output
             node_y_true = 1 if idx == y_true else 0
-
-            loss_y_pred_gradient = d_binary_cross_entropy(node_y_true, y_pred)
-            z_y_pred_gradient = d_sigmoid(node.raw_output)
-            z_loss_gradient = loss_y_pred_gradient * z_y_pred_gradient
+            z_loss_gradient = y_pred - node_y_true # no need for d_softmax
             previous_node_extra_gradients = self.train_node(node, z_loss_gradient)
 
             for k, v in previous_node_extra_gradients.items():
@@ -82,10 +85,10 @@ class NetworkTrainer:
 
         for previous_node_id, weight in node.weights.items():
             previous_node: Node = self.network.node_id_map[previous_node_id]
-            activation_input = previous_node.activation_input
-            activation_input_loss_gradient = activation_input * z_loss_gradient
+            activation_output = previous_node.activated_output
+            activation_output_loss_gradient = activation_output * z_loss_gradient
             new_weight = weight - (
-                self.WEIGHT_LEARNING_RATE * activation_input_loss_gradient
+                self.WEIGHT_LEARNING_RATE * activation_output_loss_gradient
             )
             node.weights[previous_node_id] = new_weight
 

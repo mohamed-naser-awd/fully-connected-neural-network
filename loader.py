@@ -2,7 +2,7 @@ import settings
 import os
 import json
 from network.network import Network
-from network.layer import Layer
+from network.layer import Layer, InputLayer, OutputLayer
 from network.node import Node
 
 
@@ -10,15 +10,17 @@ def load_network_from_data(data: dict):
     name = data["name"]
     network = Network(name)
 
-    layer_type_map = {
-        Layer.LayerType.INPUT.value: Layer.LayerType.INPUT,
-        Layer.LayerType.HIDDEN.value: Layer.LayerType.HIDDEN,
-        Layer.LayerType.OUTPUT.value: Layer.LayerType.OUTPUT,
+    layer_class_map: dict[str, type[Layer]] = {
+        Layer.LayerType.INPUT.value: InputLayer,
+        Layer.LayerType.HIDDEN.value: Layer,
+        Layer.LayerType.OUTPUT.value: OutputLayer,
     }
 
     for layer_data in data["layers"]:
-        layer_type = layer_type_map[layer_data["type"]]
-        layer = Layer(layer_type)
+        raw_layer_type = layer_data["type"]
+        layer_class = layer_class_map[raw_layer_type]
+        layer = layer_class()
+
         node_data_set = layer_data["nodes"]
         nodes = [Node(**node_object, layer=layer) for node_object in node_data_set]
         layer.set_nodes(nodes)
