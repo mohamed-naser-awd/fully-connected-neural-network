@@ -2,7 +2,6 @@ from network.network import Network
 from network.node import Node
 from .loss import loss_function
 from .derivatives import d_relu
-from network.activation import softmax
 from sample import get_mnist_training_data
 
 
