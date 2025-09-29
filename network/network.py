@@ -1,4 +1,6 @@
+from network.node import Node
 from .layer import Layer
+from functools import cached_property
 
 
 class Network:
@@ -29,3 +31,29 @@ class Network:
     @property
     def input_layer(self):
         return self.layers[0]
+
+    @property
+    def output_layer(self):
+        return self.layers[-1]
+
+    @property
+    def hidden_layers(self):
+        return self.layers[1:-1]
+
+    @cached_property
+    def nodes(self) -> list[Node]:
+        nodes: list[Node] = []
+
+        for layer in self.layers:
+            nodes.extend(layer.nodes)
+
+        return nodes
+
+    @cached_property
+    def node_id_map(self):
+        node_id_map = {}
+
+        for node in self.nodes:
+            node_id_map[node.id] = node
+
+        return node_id_map

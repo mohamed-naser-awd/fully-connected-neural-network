@@ -8,8 +8,12 @@ class Node:
     bias: float
     weights: dict[str, float]
     activation_input: float
+    activation_output: float
+    raw_output: float
+    layer = None
 
-    def __init__(self, id=None, bias=None, weights=None) -> None:
+    def __init__(self, id=None, bias=None, weights=None, layer=None) -> None:
+        self.layer = layer
         self.id = id or uuid4().hex
         self.bias = bias or uniform(-0.01, 0.01)
         self.weights = weights or {}

@@ -20,17 +20,19 @@ class Layer:
         self.nodes = nodes
 
     def init_nodes(self, size: int):
-        self.nodes = [Node(bias=None) for _ in range(size)]
+        self.nodes = [Node(bias=None, layer=self) for _ in range(size)]
 
     def forward(self, previous_layer: Self):
         for node in self.nodes:
             self.forward_node(node, previous_layer)
 
     def get_output(self):
-        node_tuple_set = [
-            (idx, self.activate_output(node.activation_input))
-            for idx, node in enumerate(self.nodes)
-        ]
+        node_tuple_set = []
+
+        for idx, node in enumerate(self.nodes):
+            node_output = self.activate_output(node.activation_input)
+            node.activation_output = node_output
+            node_tuple_set.append((idx, node_output))
 
         sorted_tuple_set = sorted(
             node_tuple_set, key=lambda prediction_obj: prediction_obj[1]
@@ -46,6 +48,7 @@ class Layer:
             connection_weight = node.get_weight(previous_node)
             node_output += connection_weight * previous_node.activation_input
 
+        node.raw_output = node_output
         node.activation_input = self.activate_output(node_output)
 
     def activate_output(self, output: float):
