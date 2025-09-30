@@ -9,10 +9,10 @@ def get_mnist_training_data() -> List[Tuple[np.ndarray, int]]:
     )
 
     data = []
+
     for img, label in _mnist:
-        # ToTensor => [0,1], حول لـ [0,255]
-        arr: np.ndarray = (img.view(-1).numpy() * 255).astype(np.uint8)  # (784,)
-        data.append((arr.reshape((784,)), label))
+        arr = img.view(-1).numpy().astype(np.float32)  # (784,), float32, [0,1]
+        data.append((arr, label))
     return data
 
 
