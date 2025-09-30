@@ -26,11 +26,11 @@ class Layer:
             b.append(bias)
             w.append(weights)
 
-        self.biases = np.array(b)
-        self.weights = np.array(w)
+        self.weights = np.asarray(w, dtype=np.float32)
+        self.biases = np.asarray(b, dtype=np.float32).reshape(-1, 1)
 
     def set_biases(self, size):
-        self.biases = np.random.uniform(-0.01, 0.01, size).astype(np.float32)
+        self.biases = np.random.uniform(-0.01, 0.01, (size, 1)).astype(np.float32)
 
     def init_nodes(self, size: int, previous_layer_size: int):
         self.set_biases(size)
@@ -42,8 +42,18 @@ class Layer:
 
     def forward(self, previous_layer: Self):
         self.a_prev = previous_layer.activated_output.astype(np.float32, copy=False)
-        self.z = self.weights @ self.a_prev + self.biases
-        self.activated_output = self.activate_output(self.z)  # يرجع np.ndarray float32
+        assert (
+            self.weights.shape[1] == self.a_prev.shape[0]
+        ), f"weights second dim {self.weights.shape[1]} != a_prev rows {self.a_prev.shape[0]}"
+        assert self.biases.shape == (
+            self.weights.shape[0],
+            1,
+        ), f"biases must be (size,1), got {self.biases.shape}"
+
+        self.z = self.weights @ self.a_prev + self.biases  # (size,1)
+        self.activated_output = self.activate_output(self.z).astype(
+            np.float32, copy=False
+        )
 
     def activate_output(self, output: np.ndarray):
         fn = {
@@ -59,6 +69,8 @@ class InputLayer(Layer):
 
     def set_input(self, input: list[int]):
         x = np.asarray(input, dtype=np.float32) / 255.0
+        if x.ndim == 1:
+            x = x.reshape(-1, 1)  # (784,) -> (784,1)
         self.activated_output = x
         self.z = self.activated_output
 

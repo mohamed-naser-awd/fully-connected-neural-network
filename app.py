@@ -8,11 +8,10 @@ from datetime import datetime
 if __name__ == "__main__":
     network = Network()
     input_layer = InputLayer(Layer.LayerType.INPUT)
-    input_layer.init_nodes(28 * 28, 0)
     network.add_layer(input_layer)
 
     hidden_layer_1 = Layer(Layer.LayerType.HIDDEN)
-    hidden_layer_1.init_nodes(256, len(input_layer.biases))
+    hidden_layer_1.init_nodes(256, 28 * 28)
     network.add_layer(hidden_layer_1)
 
     hidden_layer_2 = Layer(Layer.LayerType.HIDDEN)

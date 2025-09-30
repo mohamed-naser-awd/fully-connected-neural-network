@@ -61,7 +61,6 @@ class NetworkTrainer:
             da_prev = self.update_layer_params(layer, dz)
 
     def update_layer_params(self, layer: Layer, dz: np.ndarray) -> np.ndarray:
-        dz = dz.reshape(-1)
         a_prev = layer.a_prev.reshape(-1)
         da_prev = layer.weights.T @ dz
 

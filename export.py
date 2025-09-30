@@ -13,7 +13,15 @@ def export_network(network: Network, export_file_name: str = None):
     export_object["name"] = network.name
     export_object["layers"] = []
 
-    for layer in network.layers:
+    export_object["layers"].append(
+        {
+            "type": network.input_layer.layer_type.value,
+            "weights": [],
+            "biases": [],
+        }
+    )
+
+    for layer in network.hidden_layers + [network.output_layer]:
         layer_object = {}
         layer_object["type"] = layer.layer_type.value
         layer_object["weights"] = layer.weights.tolist()
