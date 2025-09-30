@@ -16,10 +16,8 @@ def export_network(network: Network, export_file_name: str = None):
     for layer in network.layers:
         layer_object = {}
         layer_object["type"] = layer.layer_type.value
-        layer_object["nodes"] = [
-            {"id": node.id, "bias": node.bias, "weights": node.weights}
-            for node in layer.nodes
-        ]
+        layer_object["weights"] = layer.weights.tolist()
+        layer_object["biases"] = layer.biases.tolist()
         export_object["layers"].append(layer_object)
 
     with open(export_file_path, "w") as file:

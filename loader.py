@@ -3,7 +3,6 @@ import os
 import json
 from network.network import Network
 from network.layer import Layer, InputLayer, OutputLayer
-from network.node import Node
 
 
 def load_network_from_data(data: dict):
@@ -21,8 +20,9 @@ def load_network_from_data(data: dict):
         layer_class = layer_class_map[raw_layer_type]
         layer = layer_class()
 
-        node_data_set = layer_data["nodes"]
-        nodes = [Node(**node_object, layer=layer) for node_object in node_data_set]
+        weights = layer_data["weights"]
+        biases = layer_data["biases"]
+        nodes = [(node_weights, bias) for node_weights, bias in zip(weights, biases)]
         layer.set_nodes(nodes)
         network.add_layer(layer)
 

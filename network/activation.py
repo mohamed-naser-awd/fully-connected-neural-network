@@ -1,8 +1,5 @@
 import math
-
-
-def relu(x: float):
-    return max(0, x)
+import numpy as np
 
 
 def sigmoid(x: float) -> float:
@@ -15,7 +12,12 @@ def sigmoid(x: float) -> float:
         return z / (1.0 + z)
 
 
-def softmax(z: list[float]) -> list[float]:
-    exp_z = [math.exp(v - max(z)) for v in z]
-    sum_exp = sum(exp_z)
-    return [v / sum_exp for v in exp_z]
+def relu(x: np.ndarray) -> np.ndarray:
+    return np.maximum(x, 0, dtype=x.dtype)
+
+
+def softmax(z: np.ndarray) -> np.ndarray:
+    z = z.astype(np.float32, copy=False)
+    z = z - np.max(z)  # stability
+    exp_z = np.exp(z)
+    return exp_z / (np.sum(exp_z) + 1e-12)
