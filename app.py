@@ -29,6 +29,6 @@ if __name__ == "__main__":
     now = datetime.now()
 
     trainer = NetworkTrainer(network)
-    trainer.train(epoch=50)
+    trainer.train(epoch=1)
 
     export_network(network)

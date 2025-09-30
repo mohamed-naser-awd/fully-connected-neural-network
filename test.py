@@ -1,4 +1,3 @@
-from export import export_network
 from loader import load_network_from_filename
 from sample import get_mnist_sample
 from trainer.loss import loss_function
@@ -17,5 +16,3 @@ if __name__ == "__main__":
     print(
         f"loss: {loss:.6f}, predicted: {y_pred}, actual: {y_true}, confidence: {confidence:.6f}"
     )
-
-    export_network(network)
