@@ -3,7 +3,7 @@ from network.layer import Layer, InputLayer, OutputLayer
 from export import export_network
 from sample import get_mnist_sample
 from datetime import datetime
-
+from trainer.train import NetworkTrainer
 
 if __name__ == "__main__":
     network = Network()
@@ -25,10 +25,10 @@ if __name__ == "__main__":
     input, number = get_mnist_sample()
 
     pre = datetime.now()
-    result = network.predict(input)
+    result = network.predict(input.T)
     now = datetime.now()
 
-    print(f"Network predicted: {result} but actual value is: {number}")
-    print(f"it took: {(now - pre).total_seconds()} seconds")
+    trainer = NetworkTrainer(network)
+    trainer.train(epoch=50, data=[(input, number)])
 
     export_network(network)

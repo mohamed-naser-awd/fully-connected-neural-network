@@ -20,8 +20,9 @@ class Layer:
     def __init__(self, layer_type: LayerType = None):
         self.layer_type = layer_type or self.default_layer_type
 
-    def set_nodes(self, data: list[tuple[list[float], float]]):
+    def set_nodes(self, data: list[tuple[np.ndarray, float]]):
         w, b = [], []
+
         for weights, bias in data:
             b.append(bias)
             w.append(weights)
@@ -30,27 +31,18 @@ class Layer:
         self.biases = np.asarray(b, dtype=np.float32).reshape(-1, 1)
 
     def set_biases(self, size):
-        self.biases = np.random.uniform(-0.01, 0.01, (size, 1)).astype(np.float32)
+        self.biases = np.zeros((size, 1), dtype=np.float32)  # أو 0.01 لتجنب dying ReLU
 
     def init_nodes(self, size: int, previous_layer_size: int):
         self.set_biases(size)
-        # He initialization
-        std = np.sqrt(2.0 / float(previous_layer_size))
-        self.weights = (
-            np.random.randn(size, previous_layer_size).astype(np.float32) * std
-        )
+        self.weights = np.random.randn(size, previous_layer_size).astype(
+            np.float32
+        ) * np.sqrt(2.0 / previous_layer_size)
 
     def forward(self, previous_layer: Self):
         self.a_prev = previous_layer.activated_output.astype(np.float32, copy=False)
-        assert (
-            self.weights.shape[1] == self.a_prev.shape[0]
-        ), f"weights second dim {self.weights.shape[1]} != a_prev rows {self.a_prev.shape[0]}"
-        assert self.biases.shape == (
-            self.weights.shape[0],
-            1,
-        ), f"biases must be (size,1), got {self.biases.shape}"
+        self.z = np.dot(self.weights, self.a_prev) + self.biases  # (size,1)
 
-        self.z = self.weights @ self.a_prev + self.biases  # (size,1)
         self.activated_output = self.activate_output(self.z).astype(
             np.float32, copy=False
         )
@@ -68,9 +60,9 @@ class InputLayer(Layer):
     default_layer_type = Layer.LayerType.INPUT
 
     def set_input(self, input: list[int]):
-        x = np.asarray(input, dtype=np.float32) / 255.0
+        x = np.asarray(input, dtype=np.float32)
         if x.ndim == 1:
-            x = x.reshape(-1, 1)  # (784,) -> (784,1)
+            x = x.reshape(-1, 1)
         self.activated_output = x
         self.z = self.activated_output
 

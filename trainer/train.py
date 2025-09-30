@@ -19,8 +19,11 @@ class NetworkTrainer:
     def _d_relu(z: np.ndarray) -> np.ndarray:
         return (z > 0).astype(z.dtype)
 
-    def train(self, epoch: int = 5) -> None:
-        training_data = get_mnist_training_data()
+    def train(self, epoch: int = 5, data=None) -> None:
+        training_data = data
+
+        if training_data is None:
+            training_data = get_mnist_training_data()
 
         for _ in range(epoch):
             pre = datetime.now()

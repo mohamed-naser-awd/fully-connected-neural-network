@@ -1,4 +1,5 @@
 from .layer import Layer, InputLayer, OutputLayer
+import numpy as np
 
 
 class Network:
@@ -15,7 +16,7 @@ class Network:
     def add_layer(self, layer: Layer):
         self.layers.append(layer)
 
-    def predict(self, input: list[int]):
+    def predict(self, input: np.ndarray):
         self.input_layer.set_input(input)
 
         for idx, layer in enumerate(self.layers):
